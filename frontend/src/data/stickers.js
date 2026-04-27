@@ -28,8 +28,8 @@ const team = (prefix, teamName, section, country) => {
       type = "foto_equipo";
       name = `Foto equipo ${teamName}`;
     } else {
-      type = "jugador";
-      name = `${teamName} - Jugador ${i <= 12 ? i - 1 : i - 2}`;
+      type = "d";
+      name = `${teamName} - Jugador`;
     }
     fichas.push(s(code, name, section, country, type));
   }
@@ -58,7 +58,7 @@ export const ALL_STICKERS = [
   s("FWC16", "Estadio Akron — Guadalajara",     "especiales", "México","especial"),
   s("FWC17", "BC Place — Vancouver",            "especiales", "Canadá","especial"),
   s("FWC18", "BMO Field — Toronto",             "especiales", "Canadá","especial"),
-  s("FWC19", "Stade Saputo — Montreal",         "especiales", "Canadá","especial"),
+  s("FWC19", "",         "especiales", "Canadá","especial"),
 
   // ── GRUPO A — México · Sudáfrica · Corea del Sur · Rep. Checa ────
   ...team("MEX", "México",          "grupo-a", "México"),

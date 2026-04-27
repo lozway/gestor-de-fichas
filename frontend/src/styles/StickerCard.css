@@ -18,7 +18,6 @@
   transition: border-color .12s, background .12s, transform .08s;
   user-select: none;
   -webkit-user-select: none;
-  /* Evita el menú largo-press en móvil */
   -webkit-touch-callout: none;
 }
 
@@ -41,12 +40,11 @@
 }
 .sc--repeated:hover { border-color: #f07800; }
 
-/* Especiales y históricos — borde dorado */
+/* ── FWC / especiales ── */
+/* SOLO borde dorado, sin cambiar fondo */
 .sc--gold {
   border-top-color: #f5d800;
 }
-.sc--gold.sc--missing { background: #111000; }
-.sc--gold.sc--owned   { background: #0f0e00; border-top-color: #f5d800; }
 
 /* ── Badge repetidas ── */
 .sc-badge {
@@ -73,7 +71,6 @@
   color: rgba(0, 0, 0, 0.2);
   line-height: 1;
 }
-.sc--gold .sc-type { color: rgba(245,216,0,0.5); }
 
 /* ── Código ── */
 .sc-code {
@@ -85,11 +82,10 @@
   color: #444;
   transition: color .12s;
 }
+
+/* estados (igual que jugadores) */
 .sc--owned    .sc-code { color: #2db551; }
 .sc--repeated .sc-code { color: #f07800; }
-.sc--gold     .sc-code { color: #8a7800; }
-.sc--gold.sc--owned .sc-code,
-.sc--gold.sc--repeated .sc-code { color: #f5d800; }
 
 /* ── Nombre ── */
 .sc-name {
@@ -106,6 +102,7 @@
   transition: color .12s;
   word-break: break-word;
 }
+
 .sc--owned    .sc-name { color: #aaa; }
 .sc--repeated .sc-name { color: #aaa; }
 
@@ -120,9 +117,9 @@
   transition: background .12s;
   flex-shrink: 0;
 }
+
 .sc--owned    .sc-dot { background: #2db551; }
 .sc--repeated .sc-dot { background: #f07800; }
-.sc--gold.sc--owned .sc-dot { background: #f5d800; }
 
 /* ── Responsive ── */
 @media (min-width: 600px) {

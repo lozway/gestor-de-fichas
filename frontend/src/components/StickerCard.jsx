@@ -5,25 +5,20 @@ import "../styles/StickerCard.css";
 const HOLD_MS = 600;
 
 export default function StickerCard({ sticker }) {
-  const { toggleSticker, resetSticker, decrementSticker } = useContext(CollectionContext);
+  const { toggleSticker, resetSticker } = useContext(CollectionContext);
   const { id, code, name, owned, repeated_count, type } = sticker;
 
   const holdTimer = useRef(null);
   const didHold   = useRef(false);
 
-  // Clic rápido → marcar / sumar repetida
-  // Mantener 600ms → resetear a "no la tengo"
   const startHold = useCallback(() => {
     didHold.current = false;
     holdTimer.current = setTimeout(() => {
       didHold.current = true;
-
-      decrementSticker(id); // 👈 aquí el cambio
-
+      resetSticker(id);
       if (navigator.vibrate) navigator.vibrate(80);
     }, HOLD_MS);
-  }, [id, decrementSticker]);
-
+  }, [id, resetSticker]);
 
   const endHold = useCallback(() => {
     clearTimeout(holdTimer.current);

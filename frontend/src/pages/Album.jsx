@@ -21,20 +21,19 @@ const SECTIONS = [
 ];
 
 const VIEW_FILTERS = [
-  { id: "all",      label: "Todas"    },
-  { id: "owned",    label: "Tengo"    },
-  { id: "missing",  label: "Me faltan"},
-  { id: "repeated", label: "Repetidas"},
+  { id: "all",      label: "Todas"     },
+  { id: "owned",    label: "Tengo"     },
+  { id: "missing",  label: "Me faltan" },
+  { id: "repeated", label: "Repetidas" },
 ];
 
 export default function Album() {
-  const { stickers, toggleSticker } = useContext(CollectionContext);
+  const { stickers, loading } = useContext(CollectionContext);
 
   const [activeSection, setActiveSection] = useState("all");
   const [viewFilter,    setViewFilter]    = useState("all");
   const [search,        setSearch]        = useState("");
 
-  /* Atajo / para enfocar búsqueda */
   useEffect(() => {
     const onKey = (e) => {
       if (e.target.tagName === "INPUT") return;
@@ -44,7 +43,6 @@ export default function Album() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  /* Filtrado */
   const displayed = useCallback(() => {
     let r = stickers;
     if (activeSection !== "all") r = r.filter(s => s.section === activeSection);
@@ -53,17 +51,15 @@ export default function Album() {
     if (viewFilter === "repeated") r = r.filter(s => s.repeated_count > 0);
     if (search.trim()) {
       const q = search.toLowerCase();
-
-      r = r.filter((s) =>
-        (s.name || "").toLowerCase().includes(q) ||
-        (s.number?.toString() || "").includes(q) ||
-        (s.section || "").toLowerCase().includes(q)
+      r = r.filter(s =>
+        (s.name    || "").toLowerCase().includes(q) ||
+        (s.code    || "").toLowerCase().includes(q) ||
+        (s.country || "").toLowerCase().includes(q)
       );
     }
     return r;
   }, [stickers, activeSection, viewFilter, search]);
 
-  /* Stats */
   const total    = stickers.length;
   const owned    = stickers.filter(s => s.owned).length;
   const pct      = total > 0 ? Math.round((owned / total) * 100) : 0;
@@ -75,7 +71,6 @@ export default function Album() {
   return (
     <div className="album-root">
 
-      {/* ── HEADER ── */}
       <header className="album-header">
         <div className="album-header-inner">
           <div className="album-brand">
@@ -84,14 +79,11 @@ export default function Album() {
           </div>
           <div className="album-brand-sub">Mi álbum de figuritas</div>
         </div>
-
-        {/* Barra de progreso pegada al bottom del header */}
         <div className="album-progress-bar">
           <div className="album-progress-fill" style={{ width: `${pct}%` }} />
         </div>
       </header>
 
-      {/* ── STATS ── */}
       <div className="album-stats-row">
         <div className="stat-chip stat-chip--owned">
           <span className="stat-num">{owned}</span>
@@ -111,7 +103,6 @@ export default function Album() {
         </div>
       </div>
 
-      {/* ── BÚSQUEDA ── */}
       <div className="album-search-wrap">
         <span className="search-icon">⌕</span>
         <input
@@ -128,7 +119,6 @@ export default function Album() {
         )}
       </div>
 
-      {/* ── FILTROS ESTADO ── */}
       <div className="album-view-filters">
         {VIEW_FILTERS.map(f => (
           <button
@@ -141,7 +131,6 @@ export default function Album() {
         ))}
       </div>
 
-      {/* ── SECCIONES ── */}
       <div className="album-sections-wrap">
         <div className="album-sections">
           {SECTIONS.map(sec => {
@@ -155,6 +144,7 @@ export default function Album() {
                 key={sec.id}
                 className={`sec-btn ${active ? "sec-btn--active" : ""}`}
                 onClick={() => setActiveSection(sec.id)}
+                title={sec.teams || sec.label}
               >
                 <span className="sec-short">{sec.short}</span>
                 <span className="sec-progress">{secOwned}/{secStickers.length}</span>
@@ -164,9 +154,13 @@ export default function Album() {
         </div>
       </div>
 
-      {/* ── GRID ── */}
       <main className="album-main">
-        {shown.length === 0 ? (
+        {loading ? (
+          <div className="album-loading">
+            <div className="loading-spinner" />
+            <p>Cargando tu álbum…</p>
+          </div>
+        ) : shown.length === 0 ? (
           <div className="album-empty">
             <p className="empty-icon">◻</p>
             <p>Sin resultados</p>
@@ -180,22 +174,17 @@ export default function Album() {
         ) : (
           <div className="album-grid">
             {shown.map(sticker => (
-              <StickerCard
-                key={sticker.id}
-                sticker={sticker}
-              />
+              <StickerCard key={sticker.id} sticker={sticker} />
             ))}
           </div>
         )}
       </main>
 
-      {/* ── INSTRUCCIONES FLOTANTES (solo móvil, desaparece tras 4s) ── */}
       <HintToast />
     </div>
   );
 }
 
-/* Toast de ayuda que aparece una sola vez */
 function HintToast() {
   const [visible, setVisible] = useState(true);
   useEffect(() => {
