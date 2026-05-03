@@ -1,0 +1,244 @@
+/* ── StickerModal.css — FIFA World Cup 2026 ── */
+
+:root {
+  --fwc-green:  #2db551;
+  --fwc-orange: #f07800;
+  --fwc-yellow: #f5d800;
+  --fwc-red:    #e8210a;
+  --fwc-muted:  #444;
+}
+
+/* ── Overlay ── */
+.sm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: smOverlayIn .2s ease both;
+}
+
+@keyframes smOverlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Card ── */
+.sm-card {
+  position: relative;
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-top: 3px solid var(--fwc-yellow);
+  width: 100%;
+  max-width: 340px;
+  padding: 40px 28px 28px;
+  overflow: hidden;
+  animation: smCardIn .25s cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes smCardIn {
+  from { opacity: 0; transform: translateY(20px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Fondo decorativo */
+.sm-bg-deco {
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  opacity: 0.06;
+  pointer-events: none;
+  transition: background .3s;
+}
+
+/* Cerrar */
+.sm-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.3);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px 6px;
+  transition: color .15s;
+}
+.sm-close:hover { color: rgba(255,255,255,0.8); }
+
+/* Código grande */
+.sm-code-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sm-code {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 56px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--fwc-yellow);
+  letter-spacing: -.02em;
+}
+
+.sm-type-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  font-family: 'Noto Sans', sans-serif;
+}
+
+/* Nombre */
+.sm-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #e8eaf0;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+
+.sm-country {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 4px;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+/* Divisor */
+.sm-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 20px 0 16px;
+}
+
+/* Estado */
+.sm-status {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 20px;
+  transition: color .2s;
+}
+
+/* ── Controles ── */
+.sm-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 20px;
+}
+
+.sm-btn {
+  width: 56px;
+  height: 56px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: #1a1a1a;
+  color: #e8eaf0;
+  cursor: pointer;
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s, color .15s, transform .1s;
+  user-select: none;
+}
+
+.sm-btn:active:not(:disabled) {
+  transform: scale(.92);
+}
+
+.sm-btn--minus {
+  border-right: none;
+}
+.sm-btn--minus:hover:not(:disabled) {
+  background: rgba(232,33,10,0.15);
+  color: var(--fwc-red);
+}
+.sm-btn--minus:disabled {
+  opacity: .25;
+  cursor: not-allowed;
+}
+
+.sm-btn--plus {
+  border-left: none;
+}
+.sm-btn--plus:hover {
+  background: rgba(45,181,81,0.15);
+  color: var(--fwc-green);
+}
+
+/* Cantidad central */
+.sm-quantity-wrap {
+  width: 80px;
+  height: 56px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: #0d0d0d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.sm-quantity {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--fwc-yellow);
+}
+
+.sm-quantity-lbl {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  font-family: 'Noto Sans', sans-serif;
+}
+
+/* Hint */
+.sm-hint {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  font-family: 'Noto Sans', sans-serif;
+}
+.sm-hint kbd {
+  font-family: inherit;
+  background: rgba(255,255,255,0.08);
+  padding: 1px 5px;
+  border: 1px solid rgba(255,255,255,0.12);
+  font-size: 10px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 380px) {
+  .sm-card    { padding: 36px 20px 24px; }
+  .sm-code    { font-size: 44px; }
+  .sm-name    { font-size: 18px; }
+  .sm-btn     { width: 48px; height: 48px; font-size: 24px; }
+  .sm-quantity-wrap { width: 70px; height: 48px; }
+  .sm-quantity { font-size: 26px; }
+}

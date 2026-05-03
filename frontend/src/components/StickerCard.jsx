@@ -1,33 +1,41 @@
-import { useContext, useRef, useCallback } from "react";
+import { useContext, useRef, useCallback, useState } from "react";
 import { CollectionContext } from "../context/CollectionContext";
+import StickerModal from "./StickerModal";
 import "../styles/StickerCard.css";
 
-const HOLD_MS = 600;
+const HOLD_MS = 500;
 
 export default function StickerCard({ sticker }) {
-  const { toggleSticker, resetSticker } = useContext(CollectionContext);
   const { id, code, name, owned, repeated_count, type } = sticker;
+  const { setQuantity } = useContext(CollectionContext);
 
   const holdTimer = useRef(null);
   const didHold   = useRef(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
+  // Solo mantener abre el modal — el clic corto no hace nada
   const startHold = useCallback(() => {
     didHold.current = false;
     holdTimer.current = setTimeout(() => {
       didHold.current = true;
-      resetSticker(id);
-      if (navigator.vibrate) navigator.vibrate(80);
+      setModalOpen(true);
+      if (navigator.vibrate) navigator.vibrate(60);
     }, HOLD_MS);
-  }, [id, resetSticker]);
+  }, []);
 
   const endHold = useCallback(() => {
     clearTimeout(holdTimer.current);
   }, []);
 
+  // Clic corto: solo marca si NO la tiene (primera vez)
+  // Si ya la tiene, no hace nada — usar el modal para cambiar cantidad
   const handleClick = useCallback(() => {
     if (didHold.current) return;
-    toggleSticker(id);
-  }, [id, toggleSticker]);
+    if (!owned) {
+      setQuantity(id, 1); // primera marca
+    }
+    // Si ya la tiene, no hace nada — abrir modal con hold
+  }, [id, owned, setQuantity]);
 
   const handleContextMenu = (e) => e.preventDefault();
 
@@ -45,24 +53,34 @@ export default function StickerCard({ sticker }) {
   if (type === "estadio")     typeTag = "EST";
 
   return (
-    <button
-      className={`sc ${stateClass}${isGold ? " sc--gold" : ""}`}
-      onMouseDown={startHold}
-      onMouseUp={endHold}
-      onMouseLeave={endHold}
-      onTouchStart={startHold}
-      onTouchEnd={endHold}
-      onClick={handleClick}
-      onContextMenu={handleContextMenu}
-      aria-label={`${code} ${name}`}
-    >
-      {owned && repeated_count > 0 && (
-        <span className="sc-badge">+{repeated_count}</span>
+    <>
+      <button
+        className={`sc ${stateClass}${isGold ? " sc--gold" : ""}`}
+        onMouseDown={startHold}
+        onMouseUp={endHold}
+        onMouseLeave={endHold}
+        onTouchStart={startHold}
+        onTouchEnd={endHold}
+        onClick={handleClick}
+        onContextMenu={handleContextMenu}
+        aria-label={`${code} ${name}`}
+        title="Mantén presionado para ver opciones"
+      >
+        {owned && repeated_count > 0 && (
+          <span className="sc-badge">+{repeated_count}</span>
+        )}
+        {typeTag && <span className="sc-type">{typeTag}</span>}
+        <span className="sc-code">{code}</span>
+        <span className="sc-name">{name}</span>
+        <span className="sc-dot" />
+      </button>
+
+      {modalOpen && (
+        <StickerModal
+          sticker={sticker}
+          onClose={() => setModalOpen(false)}
+        />
       )}
-      {typeTag && <span className="sc-type">{typeTag}</span>}
-      <span className="sc-code">{code}</span>
-      <span className="sc-name">{name}</span>
-      <span className="sc-dot" />
-    </button>
+    </>
   );
 }
