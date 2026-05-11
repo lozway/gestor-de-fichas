@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from "react";
 import { CollectionContext } from "../context/CollectionContext";
 import StickerCard from "../components/StickerCard";
+import StickerList from "../components/StickerList";
 import "../styles/Album.css";
 
 const SECTIONS = [
@@ -33,6 +34,7 @@ export default function Album() {
   const [activeSection, setActiveSection] = useState("all");
   const [viewFilter,    setViewFilter]    = useState("all");
   const [search,        setSearch]        = useState("");
+  const [listMode,      setListMode]      = useState(null); // null | "missing" | "repeated"
 
   useEffect(() => {
     const onKey = (e) => {
@@ -84,19 +86,31 @@ export default function Album() {
         </div>
       </header>
 
+      {/* ── STATS — "me faltan" y "repetidas" abren el panel de lista ── */}
       <div className="album-stats-row">
         <div className="stat-chip stat-chip--owned">
           <span className="stat-num">{owned}</span>
           <span className="stat-lbl">tengo</span>
         </div>
-        <div className="stat-chip stat-chip--missing">
+
+        <button
+          className="stat-chip stat-chip--missing stat-chip--clickable"
+          onClick={() => setListMode("missing")}
+          title="Ver listado de las que me faltan"
+        >
           <span className="stat-num">{missing}</span>
-          <span className="stat-lbl">me faltan</span>
-        </div>
-        <div className="stat-chip stat-chip--repeated">
+          <span className="stat-lbl">me faltan ↗</span>
+        </button>
+
+        <button
+          className="stat-chip stat-chip--repeated stat-chip--clickable"
+          onClick={() => setListMode("repeated")}
+          title="Ver listado de repetidas"
+        >
           <span className="stat-num">{repeated}</span>
-          <span className="stat-lbl">repetidas</span>
-        </div>
+          <span className="stat-lbl">repetidas ↗</span>
+        </button>
+
         <div className="stat-chip stat-chip--pct">
           <span className="stat-num">{pct}%</span>
           <span className="stat-lbl">completo</span>
@@ -181,6 +195,15 @@ export default function Album() {
       </main>
 
       <HintToast />
+
+      {/* ── Panel de lista (me faltan / repetidas) ── */}
+      {listMode && (
+        <StickerList
+          mode={listMode}
+          onClose={() => setListMode(null)}
+        />
+      )}
+
     </div>
   );
 }
@@ -194,7 +217,7 @@ function HintToast() {
   if (!visible) return null;
   return (
     <div className="hint-toast">
-      <span>Toca para marcar · Toca de nuevo para repetida · Mantén para quitar</span>
+      <span>Mantén presionado una ficha para ver opciones</span>
       <button onClick={() => setVisible(false)}>✕</button>
     </div>
   );
