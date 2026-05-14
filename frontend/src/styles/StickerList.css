@@ -1,4 +1,4 @@
-/* ── StickerList.css ── */
+/* ── StickerList.css — mobile-first con botón siempre visible ── */
 
 .sl-overlay {
   position: fixed;
@@ -8,7 +8,7 @@
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   display: flex;
-  align-items: flex-end;
+  align-items: flex-end;       /* panel desde abajo en móvil */
   justify-content: center;
   animation: slOverlayIn .18s ease both;
 }
@@ -18,33 +18,43 @@
   .sl-overlay { align-items: center; }
 }
 
-/* ── Panel ── */
+/* ── Panel: flex column con altura fija ── */
 .sl-panel {
   background: #111;
   border: 1px solid rgba(255,255,255,0.08);
   border-top: 3px solid #f5d800;
   width: 100%;
   max-width: 580px;
-  max-height: 92vh;
+  /* Altura fija para que el footer siempre se vea */
+  height: 88vh;
+  height: 88dvh;
   display: flex;
   flex-direction: column;
   animation: slPanelIn .22s cubic-bezier(.22,1,.36,1) both;
+  overflow: hidden; /* importante: el scroll va solo en .sl-body */
 }
+
+@media (min-width: 640px) {
+  .sl-panel {
+    height: 80vh;
+    height: 80dvh;
+    max-height: 700px;
+  }
+}
+
 @keyframes slPanelIn {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Header ── */
+/* ── Header — fijo arriba ── */
 .sl-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 18px;
   border-bottom: 1px solid rgba(255,255,255,0.07);
-  flex-shrink: 0;
-  gap: 10px;
-  flex-wrap: wrap;
+  flex-shrink: 0;  /* nunca se encoge */
 }
 
 .sl-title-row {
@@ -68,49 +78,29 @@
   font-family: 'Noto Sans', sans-serif;
 }
 
-.sl-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sl-copy-btn {
-  background: #f5d800;
-  border: none;
-  color: #0a0a0a;
-  cursor: pointer;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  padding: 7px 14px;
-  transition: background .15s, transform .1s;
-}
-.sl-copy-btn:hover  { background: #ffd900; }
-.sl-copy-btn:active { transform: scale(.96); }
-
 .sl-close {
   background: none;
   border: none;
   color: rgba(255,255,255,0.3);
   cursor: pointer;
-  font-size: 18px;
-  padding: 4px 6px;
+  font-size: 20px;
+  padding: 4px 8px;
   transition: color .15s;
+  flex-shrink: 0;
 }
 .sl-close:hover { color: rgba(255,255,255,0.8); }
 
-/* ── Body ── */
+/* ── Body — scrolleable, ocupa todo el espacio disponible ── */
 .sl-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 14px 18px;
+  flex: 1;           /* expande para ocupar el espacio entre header y footer */
+  overflow-y: auto;  /* scroll aquí, no en el panel */
+  padding: 14px 16px;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: #2a2a2a transparent;
 }
-.sl-body::-webkit-scrollbar       { width: 4px; }
-.sl-body::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+.sl-body::-webkit-scrollbar       { width: 3px; }
+.sl-body::-webkit-scrollbar-thumb { background: #2a2a2a; }
 
 .sl-empty {
   display: flex;
@@ -127,7 +117,7 @@
 .sl-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .sl-group {
@@ -136,11 +126,11 @@
   gap: 8px;
 }
 
-.sl-emoji {
-  font-size: 14px;
+.sl-flag {
+  font-size: 18px;
   flex-shrink: 0;
-  margin-top: 2px;
-  line-height: 1;
+  margin-top: 1px;
+  line-height: 1.3;
 }
 
 .sl-group-content {
@@ -148,12 +138,13 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
+  min-width: 0;
 }
 
 .sl-group-header {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: wrap;
 }
 
@@ -168,21 +159,21 @@
 
 .sl-prefix {
   font-size: 11px;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.28);
   font-family: 'Noto Sans', sans-serif;
 }
 
 .sl-group-count {
   font-size: 11px;
-  color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.22);
   font-family: 'Noto Sans', sans-serif;
 }
 
 .sl-codes {
   display: flex;
   flex-wrap: wrap;
-  gap: 1px 2px;
-  line-height: 1.7;
+  gap: 0 2px;
+  line-height: 1.8;
 }
 
 .sl-code-item {
@@ -195,7 +186,7 @@
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.42);
   letter-spacing: .03em;
 }
 
@@ -211,46 +202,38 @@
   font-size: 11px;
 }
 
-/* ── Preview ── */
-.sl-raw-wrap {
+/* ── Footer — fijo abajo, SIEMPRE visible ── */
+.sl-footer {
+  flex-shrink: 0;    /* nunca se encoge */
+  padding: 12px 16px;
   border-top: 1px solid rgba(255,255,255,0.07);
-  padding: 10px 18px 14px;
-  flex-shrink: 0;
+  background: #111;  /* mismo fondo para cubrir el scroll */
 }
 
-.sl-raw-label {
+.sl-copy-btn {
   display: block;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .1em;
+  width: 100%;
+  background: #f5d800;
+  border: none;
+  color: #0a0a0a;
+  cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: .06em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.18);
-  margin-bottom: 6px;
-  font-family: 'Noto Sans', sans-serif;
+  padding: 14px;
+  transition: background .15s, transform .1s;
 }
+.sl-copy-btn:hover  { background: #ffd900; }
+.sl-copy-btn:active { transform: scale(.97); }
 
-.sl-raw {
-  font-family: 'Courier New', monospace;
-  font-size: 10px;
-  color: rgba(255,255,255,0.3);
-  background: #080808;
-  border: 1px solid rgba(255,255,255,0.05);
-  padding: 10px 12px;
-  max-height: 110px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  word-break: break-all;
-  line-height: 1.65;
-  margin: 0;
-  scrollbar-width: thin;
-  scrollbar-color: #1a1a1a transparent;
-}
-
-/* ── Responsive ── */
-@media (max-width: 480px) {
+/* ── Responsive pequeño ── */
+@media (max-width: 380px) {
   .sl-header   { padding: 12px 14px; }
   .sl-body     { padding: 12px 14px; }
-  .sl-raw-wrap { padding: 8px 14px 12px; }
+  .sl-footer   { padding: 10px 14px; }
   .sl-title    { font-size: 19px; }
-  .sl-copy-btn { font-size: 12px; padding: 6px 11px; }
+  .sl-flag     { font-size: 16px; }
+  .sl-copy-btn { font-size: 15px; padding: 13px; }
 }

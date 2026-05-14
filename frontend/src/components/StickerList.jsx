@@ -2,37 +2,72 @@ import { useContext, useState } from "react";
 import { CollectionContext } from "../context/CollectionContext";
 import "../styles/StickerList.css";
 
-const TEAM_NAMES = {
-  FWC: "Especiales",
-  MEX: "México",        RSA: "Sudáfrica",         KOR: "Corea del Sur",    CZE: "República Checa",
-  CAN: "Canadá",        BIH: "Bosnia y Herzegovina",QAT: "Catar",           SUI: "Suiza",
-  BRA: "Brasil",        MAR: "Marruecos",          HAI: "Haití",            SCO: "Escocia",
-  USA: "Estados Unidos",PAR: "Paraguay",           AUS: "Australia",        TUR: "Turquía",
-  GER: "Alemania",      CUW: "Curazao",            CIV: "Costa de Marfil",  ECU: "Ecuador",
-  NED: "Países Bajos",  JPN: "Japón",              SWE: "Suecia",           TUN: "Túnez",
-  BEL: "Bélgica",       EGY: "Egipto",             IRN: "Irán",             NZL: "Nueva Zelanda",
-  ESP: "España",        CPV: "Cabo Verde",          KSA: "Arabia Saudita",   URU: "Uruguay",
-  FRA: "Francia",       SEN: "Senegal",            IRQ: "Irak",             NOR: "Noruega",
-  ARG: "Argentina",     ALG: "Argelia",            AUT: "Austria",          JOR: "Jordania",
-  POR: "Portugal",      COD: "Rep. Dem. del Congo", UZB: "Uzbekistán",      COL: "Colombia",
-  ENG: "Inglaterra",    CRO: "Croacia",            GHA: "Ghana",            PAN: "Panamá",
+const TEAMS = {
+  FWC: { name: "Especiales",              flag: "🏆" },
+  MEX: { name: "México",                  flag: "🇲🇽" },
+  RSA: { name: "Sudáfrica",               flag: "🇿🇦" },
+  KOR: { name: "Corea del Sur",           flag: "🇰🇷" },
+  CZE: { name: "Rep. Checa",              flag: "🇨🇿" },
+  CAN: { name: "Canadá",                  flag: "🇨🇦" },
+  BIH: { name: "Bosnia y Herzegovina",    flag: "🇧🇦" },
+  QAT: { name: "Catar",                   flag: "🇶🇦" },
+  SUI: { name: "Suiza",                   flag: "🇨🇭" },
+  BRA: { name: "Brasil",                  flag: "🇧🇷" },
+  MAR: { name: "Marruecos",               flag: "🇲🇦" },
+  HAI: { name: "Haití",                   flag: "🇭🇹" },
+  SCO: { name: "Escocia",                 flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+  USA: { name: "Estados Unidos",          flag: "🇺🇸" },
+  PAR: { name: "Paraguay",                flag: "🇵🇾" },
+  AUS: { name: "Australia",               flag: "🇦🇺" },
+  TUR: { name: "Turquía",                 flag: "🇹🇷" },
+  GER: { name: "Alemania",                flag: "🇩🇪" },
+  CUW: { name: "Curazao",                 flag: "🇨🇼" },
+  CIV: { name: "Costa de Marfil",         flag: "🇨🇮" },
+  ECU: { name: "Ecuador",                 flag: "🇪🇨" },
+  NED: { name: "Países Bajos",            flag: "🇳🇱" },
+  JPN: { name: "Japón",                   flag: "🇯🇵" },
+  SWE: { name: "Suecia",                  flag: "🇸🇪" },
+  TUN: { name: "Túnez",                   flag: "🇹🇳" },
+  BEL: { name: "Bélgica",                 flag: "🇧🇪" },
+  EGY: { name: "Egipto",                  flag: "🇪🇬" },
+  IRN: { name: "Irán",                    flag: "🇮🇷" },
+  NZL: { name: "Nueva Zelanda",           flag: "🇳🇿" },
+  ESP: { name: "España",                  flag: "🇪🇸" },
+  CPV: { name: "Cabo Verde",              flag: "🇨🇻" },
+  KSA: { name: "Arabia Saudita",          flag: "🇸🇦" },
+  URU: { name: "Uruguay",                 flag: "🇺🇾" },
+  FRA: { name: "Francia",                 flag: "🇫🇷" },
+  SEN: { name: "Senegal",                 flag: "🇸🇳" },
+  IRQ: { name: "Irak",                    flag: "🇮🇶" },
+  NOR: { name: "Noruega",                 flag: "🇳🇴" },
+  ARG: { name: "Argentina",               flag: "🇦🇷" },
+  ALG: { name: "Argelia",                 flag: "🇩🇿" },
+  AUT: { name: "Austria",                 flag: "🇦🇹" },
+  JOR: { name: "Jordania",                flag: "🇯🇴" },
+  POR: { name: "Portugal",                flag: "🇵🇹" },
+  COD: { name: "Rep. Dem. del Congo",     flag: "🇨🇩" },
+  UZB: { name: "Uzbekistán",              flag: "🇺🇿" },
+  COL: { name: "Colombia",                flag: "🇨🇴" },
+  ENG: { name: "Inglaterra",              flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+  CRO: { name: "Croacia",                 flag: "🇭🇷" },
+  GHA: { name: "Ghana",                   flag: "🇬🇭" },
+  PAN: { name: "Panamá",                  flag: "🇵🇦" },
 };
 
-// Orden de secciones para que FWC salga primero y luego grupos A→L
 const SECTION_ORDER = [
   "FWC",
-  "MEX","RSA","KOR","CZE",   // Grupo A
-  "CAN","BIH","QAT","SUI",   // Grupo B
-  "BRA","MAR","HAI","SCO",   // Grupo C
-  "USA","PAR","AUS","TUR",   // Grupo D
-  "GER","CUW","CIV","ECU",   // Grupo E
-  "NED","JPN","SWE","TUN",   // Grupo F
-  "BEL","EGY","IRN","NZL",   // Grupo G
-  "ESP","CPV","KSA","URU",   // Grupo H
-  "FRA","SEN","IRQ","NOR",   // Grupo I
-  "ARG","ALG","AUT","JOR",   // Grupo J
-  "POR","COD","UZB","COL",   // Grupo K
-  "ENG","CRO","GHA","PAN",   // Grupo L
+  "MEX","RSA","KOR","CZE",
+  "CAN","BIH","QAT","SUI",
+  "BRA","MAR","HAI","SCO",
+  "USA","PAR","AUS","TUR",
+  "GER","CUW","CIV","ECU",
+  "NED","JPN","SWE","TUN",
+  "BEL","EGY","IRN","NZL",
+  "ESP","CPV","KSA","URU",
+  "FRA","SEN","IRQ","NOR",
+  "ARG","ALG","AUT","JOR",
+  "POR","COD","UZB","COL",
+  "ENG","CRO","GHA","PAN",
 ];
 
 function groupByTeam(stickers) {
@@ -46,7 +81,7 @@ function groupByTeam(stickers) {
 }
 
 function sortedPrefixes(groups) {
-  return SECTION_ORDER.filter(p => groups[p] && groups[p].length > 0);
+  return SECTION_ORDER.filter(p => groups[p]?.length > 0);
 }
 
 export default function StickerList({ mode, onClose }) {
@@ -61,76 +96,60 @@ export default function StickerList({ mode, onClose }) {
   const prefixes = sortedPrefixes(groups);
   const total    = filtered.length;
 
-  // ── Genera el texto formateado para WhatsApp ──────────────────────
   const generateWhatsApp = () => {
     const lines = [];
-
     if (mode === "missing") {
       lines.push(`📋 *Mis láminas faltantes — Mundial 2026*`);
       lines.push(`Me faltan ${total} láminas para completar mi álbum:`);
     } else {
       lines.push(`🔄 *Mis láminas repetidas — Mundial 2026*`);
-      lines.push(`Tengo ${total} láminas repetidas disponibles para intercambio:`);
+      lines.push(`Tengo ${total} láminas repetidas para intercambio:`);
     }
-
     lines.push("");
 
     prefixes.forEach(prefix => {
-      const teamName = TEAM_NAMES[prefix] || prefix;
+      const team = TEAMS[prefix] || { name: prefix, flag: "🏳️" };
       const teamStickers = groups[prefix];
-      const count = teamStickers.length;
-
-      lines.push(`⚽ *${teamName}* (${prefix}) — ${count}`);
-
+      lines.push(`${team.flag} *${team.name}* (${prefix}) — ${teamStickers.length}`);
       if (mode === "repeated") {
-        const codes = teamStickers.map(s =>
+        lines.push(teamStickers.map(s =>
           s.repeated_count > 1 ? `${s.code} (×${s.repeated_count})` : s.code
-        ).join(", ");
-        lines.push(codes);
+        ).join(", "));
       } else {
-        const codes = teamStickers.map(s => s.code).join(", ");
-        lines.push(codes);
+        lines.push(teamStickers.map(s => s.code).join(", "));
       }
     });
 
     lines.push("");
     lines.push("━━━━━━━━━━━━━━━━━━");
-    lines.push(`📲 Lista generada con *Gestor de Fichas* — app para coleccionar e intercambiar láminas del Mundial 2026.`);
+    lines.push(`📲 Lista generada con *Gestor de Fichas — Mundial 2026*`);
     lines.push(`https://gestor-de-fichas-orpin.vercel.app`);
-
     return lines.join("\n");
   };
 
   const handleCopy = () => {
-    const text = generateWhatsApp();
-    navigator.clipboard.writeText(text).then(() => {
+    navigator.clipboard.writeText(generateWhatsApp()).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     });
   };
 
   const title = mode === "repeated" ? "Repetidas" : "Me faltan";
-  const preview = generateWhatsApp();
 
   return (
     <div className="sl-overlay" onClick={onClose}>
       <div className="sl-panel" onClick={e => e.stopPropagation()}>
 
-        {/* Header */}
+        {/* Header fijo */}
         <div className="sl-header">
           <div className="sl-title-row">
             <span className="sl-title">{title}</span>
             <span className="sl-count">{total} fichas</span>
           </div>
-          <div className="sl-actions">
-            <button className="sl-copy-btn" onClick={handleCopy}>
-              {copied ? "✓ Copiado" : "📋 Copiar para WhatsApp"}
-            </button>
-            <button className="sl-close" onClick={onClose} aria-label="Cerrar">✕</button>
-          </div>
+          <button className="sl-close" onClick={onClose} aria-label="Cerrar">✕</button>
         </div>
 
-        {/* Lista visual */}
+        {/* Lista scrolleable */}
         <div className="sl-body">
           {prefixes.length === 0 ? (
             <div className="sl-empty">
@@ -141,14 +160,14 @@ export default function StickerList({ mode, onClose }) {
           ) : (
             <div className="sl-list">
               {prefixes.map(prefix => {
-                const teamName = TEAM_NAMES[prefix] || prefix;
+                const team = TEAMS[prefix] || { name: prefix, flag: "🏳️" };
                 const teamStickers = groups[prefix];
                 return (
                   <div key={prefix} className="sl-group">
-                    <span className="sl-emoji">⚽</span>
+                    <span className="sl-flag">{team.flag}</span>
                     <div className="sl-group-content">
                       <div className="sl-group-header">
-                        <span className="sl-team-name">{teamName}</span>
+                        <span className="sl-team-name">{team.name}</span>
                         <span className="sl-prefix">({prefix})</span>
                         <span className="sl-group-count">— {teamStickers.length}</span>
                       </div>
@@ -173,10 +192,11 @@ export default function StickerList({ mode, onClose }) {
           )}
         </div>
 
-        {/* Preview del texto que se copiará */}
-        <div className="sl-raw-wrap">
-          <span className="sl-raw-label">Vista previa del mensaje</span>
-          <pre className="sl-raw">{preview}</pre>
+        {/* Botón SIEMPRE visible abajo — fijo */}
+        <div className="sl-footer">
+          <button className="sl-copy-btn" onClick={handleCopy}>
+            {copied ? "✓ ¡Copiado!" : "📋 Copiar para WhatsApp"}
+          </button>
         </div>
 
       </div>
